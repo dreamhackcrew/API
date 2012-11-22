@@ -1,4 +1,4 @@
-#Basic access authentication
+#Basic access authentication <span class="label label-important">Only available when using SSL (https)</span>
 If an HTTP receives an anonymous request for a protected resource it can force the use of Basic authentication by rejecting the request with a 401 (Access Denied) status code and setting the WWW-Authenticate __response header__ as shown below:
 
     HTTP/1.1 401 Unauthorized
@@ -16,4 +16,4 @@ The Authorization specifies the authentication mechanism (in this case Basic) fo
 
 ## Using curl
 
-    curl --user name:password "http://api.crew.dreamhack.se/1/user/get/635?fields=uid,username"
+    curl --user name:password "https://api.crew.dreamhack.se/1/user/get/635?fields=uid,username"

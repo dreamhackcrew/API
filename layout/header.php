@@ -6,15 +6,7 @@
         <meta http-equiv="Expires" content="Tue, 01 Jan 1980 1:00:00 GMT">
         <meta http-equiv="Pragma" content="no-cache"> 
         <title>DHCC API</title>
-
-       <!-- <script type="text/javascript" src="/js/mootools-core-1.4.5-full-nocompat-yc.js"></script>-->
         <link href="/layout/css/bootstrap.min.css" rel="stylesheet" media="screen">
-
-        <style>
-          body {
-            padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-          }
-        </style>
         <link href="/layout/css/bootstrap-responsive.css" rel="stylesheet">
         <link href="/layout/css/base.css" rel="stylesheet">
     </head>
@@ -66,7 +58,7 @@
 
                 $tree=array(
                     '<i class="icon-home icon-white"></i> Home' => '/',
-                    '<i class="icon-book icon-white"></i> Authorize' => $auth,
+                    '<i class="icon-lock icon-white"></i> Authorize' => $auth,
                     '<i class="icon-book icon-white"></i> Version 1' => array_merge(
                         $general,
                         array('label1'=>'Public'),
