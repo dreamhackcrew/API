@@ -233,6 +233,7 @@ class db {
    {
       if ( func_num_args() > 1 ) {
           $args = array_slice(func_get_args(),1);
+          $args = $this->escapeStr($args);
           $sql = vsprintf($sql,$args);
       }
 
@@ -266,6 +267,7 @@ class db {
 
       if ( func_num_args() > 1 ) {
           $args = array_slice(func_get_args(),1);
+          $args = $this->escapeStr($args);
           $sql = vsprintf($sql,$this->escapeStr($args));
       }
 
@@ -293,6 +295,7 @@ class db {
    {
       if ( func_num_args() > 1 ) {
           $args = array_slice(func_get_args(),1);
+          $args = $this->escapeStr($args);
           $sql = vsprintf($sql,$this->escapeStr($args));
       }
 
@@ -320,6 +323,7 @@ class db {
    {
       if ( func_num_args() > 1 ) {
           $args = array_slice(func_get_args(),1);
+          $args = $this->escapeStr($args);
           $sql = vsprintf($sql,$this->escapeStr($args));
       }
 

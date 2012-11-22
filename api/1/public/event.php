@@ -15,7 +15,7 @@ class event extends service {
 
             if (!$events)
                 return false;
-        print_r($events);
+
             $events = db()->fetchAll("SELECT id,name,start,end,active FROM events WHERE id IN (%s)",implode(',',$events));
         }
 
