@@ -75,7 +75,6 @@ class schedule extends service {
 
         return $locations;
     }
-
 }
 
 ?>

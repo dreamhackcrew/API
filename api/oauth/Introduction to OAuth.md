@@ -24,7 +24,7 @@ The goal is to get an __access token__. The access token is a pair of keys that 
 ## OAuth signature
 This is the hard part. The secret parameter is never sent between server and client. So to prevent man-in-the-middle attacts the OAuth protocol has a parameter called signature. This signature is created by the client and checked by the server. So every time you are sending a request to a OAuth provider you need to sign the request.
 
-The first thing you need to do is collect some parameters. The string that you are going to sign is: <HTTP METHOD>&<Base URL>&<All request parameters(GET,POST and OAuth parameters)>
+The first thing you need to do is collect some parameters. The string that you are going to sign is: \<HTTP METHOD\>&\<Base URL\>&\<All request parameters(GET,POST and OAuth parameters)\>
 
 So for this example request:
 
@@ -54,7 +54,7 @@ The parameter string will be
 
     include_entities=true&oauth_consumer_key=xvz1evFS4wEEPTGEFPHBog&oauth_nonce=kYjzVBB8Y0ZFabxSWbWovY3uYSQ2pTgmZeNu2VS4cg&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1318622958&oauth_token=370773112-GmHxMAgYyLbNEtIKZeRNFsMKPR9EyMZeS9weJAEb&oauth_version=1.0&status=Hello%20Ladies%20%2B%20Gentlemen%2C%20a%20signed%20OAuth%20request%21
 
-The next step is to use this string and sign it with the signing key. The signing key is <Consumer secret>&<Token secret>.
+The next step is to use this string and sign it with the signing key. The signing key is \<Consumer secret\>&\<Token secret\>.
 
 
 ## Step 1 - The request token

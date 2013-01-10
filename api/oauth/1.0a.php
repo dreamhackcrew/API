@@ -51,6 +51,7 @@ class oauth_provider {
         // http://wiki.oauth.net/w/page/12238543/ProblemReporting
     }/*}}}*/
 
+
     function _request_token() {/*{{{*/
         // Check all required fields 
         $required = array('oauth_consumer_key','oauth_signature_method','oauth_signature','oauth_timestamp','oauth_nonce');
@@ -171,6 +172,7 @@ class oauth_provider {
         }
 
         include('layout/signin.php');
+        die();
     }
     function _OAuthAuthorizeToken() {
         $this->authorize();
@@ -232,25 +234,25 @@ class oauth_provider {
         $required = array('oauth_consumer_key','oauth_token','oauth_signature_method','oauth_signature','oauth_timestamp','oauth_nonce');
         foreach($required as $line)
             if (!isset($this->request[$line])) {
-                header('HTTP/1.0 401 Unauthorized');
+                //header('HTTP/1.0 401 Unauthorized');
                 response(array('error'=>'Not authorized','oauth_problem'=>'parameter_absent','oauth_parameters_absent'=>$line));
             }
 
         // Check that the timestamp isnt to old, max 5 min
             if ( abs(time() - $this->request['oauth_timestamp']) > 3600 ) {
-                header('HTTP/1.0 401 Unauthorized');
+                //header('HTTP/1.0 401 Unauthorized');
                 response(array('error'=>'Not authorized','oauth_problem'=>'timestamp_refused'));
             }
 
         // Find the customer
             if ( !$customer = db()->fetchSingle("SELECT * FROM api_customers WHERE customer_key='%s'",$this->request['oauth_consumer_key']) ) {
-                header('HTTP/1.0 401 Unauthorized');
+                //header('HTTP/1.0 401 Unauthorized');
                 response(array('error'=>'Not authorized','oauth_problem'=>'consumer_key_unknown'));
             }
 
         // Check auth_token
             if ( !$token = db()->fetchSingle("SELECT * FROM api_access_token WHERE token='%s'",$this->request['oauth_token']) ) {
-                header('HTTP/1.0 401 Unauthorized');
+                //header('HTTP/1.0 401 Unauthorized');
                 response(array('error'=>'Not authorized','oauth_problem'=>'token_rejected'));
             }
 
@@ -274,6 +276,19 @@ class oauth_provider {
         }
 
         $base_string = $_SERVER['REQUEST_METHOD'].'&'.urlencode($_SERVER['SCRIPT_URI']).'&'.urlencode(ltrim($out,'&'));
+
+        /*
+        $parameters = array();
+
+        foreach($this->request as $key => $line) {
+            if ( $key != 'oauth_signature' )
+                $parameters[$key] = urlencode($line);
+        }
+        ksort($parameters);
+
+        $base_string = $_SERVER['REQUEST_METHOD'].'&'.urlencode($_SERVER['SCRIPT_URI']).'&'.urlencode(http_build_query($parameters));
+        */
+
         $signature = $this->sign( $base_string, $consumer_secret, $token_secret );
 
         $a = base64_decode(urldecode($signature));
@@ -281,7 +296,7 @@ class oauth_provider {
 
         // Bin compare
         if ( rawurlencode($a) != rawurlencode($b) ) {
-            response(array('oauth_problem'=>'signature_invalid'));
+            response(array('oauth_problem'=>'signature_invalid','base'=>$base_string,  ));
         }
 
         return true;
@@ -313,7 +328,6 @@ class oauth_provider {
         }
         return urlencode($signature);
     }/*}}}*/
-
 }
 
 ?>
