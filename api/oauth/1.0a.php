@@ -252,14 +252,28 @@ class oauth_provider {
 
         // Check auth_token
             if ( !$token = db()->fetchSingle("SELECT * FROM api_access_token WHERE token='%s'",$this->request['oauth_token']) ) {
-                //header('HTTP/1.0 401 Unauthorized');
-                response(array('error'=>'Not authorized','oauth_problem'=>'token_rejected'));
+
+                if ( !$token = db()->fetchSingle("SELECT * FROM api_auth_token WHERE token='%s'",$this->request['oauth_token']) ) {
+                    response(array('error'=>'Not authorized','oauth_problem'=>'token_rejected'));
+                } else {
+                    // Check if token have expired
+                    if ( $token['expire'] < time() ) {
+                        // Delete expired keys
+                        db()->query("DELETE FROM api_auth_token WHERE expire < %d",time());
+
+                        response(array('error'=>'Not authorized','oauth_problem'=>'token_expired'));
+                    } else {
+                        // Update expire to +1 hour
+                        db()->query('UPDATE api_auth_token SET expire=%d WHERE token="%s"',time()+3600,$token['token']);
+                    }
+                }
+            } else {
+                // Update seen
+                db()->query("UPDATE api_access_token SET seen=NOW() WHERE token='%s' AND secret='%s'",$token['token'],$token['secret']);
             }
 
         // Verify signature
             $this->verify( $customer['customer_secret'], $token['secret'] );
-
-        db()->query("UPDATE api_access_token SET seen=NOW() WHERE token='%s' AND secret='%s'",$token['token'],$token['secret']);
 
         $_SESSION['id'] = $token['uid'];
 
