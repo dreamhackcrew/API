@@ -4,9 +4,11 @@ class event extends service {
     function _get($events=null) {
         // Fetch all active events if no event was provided
         if ( $events==null)
-            $events = db()->fetchAll("SELECT id,name,start,end,active FROM events WHERE active='Y'");
+            $events = db()->fetchAll("SELECT id,name,start,end,active FROM events WHERE active='Y' ORDER BY start");
         elseif ( $events=='all')
             $events = db()->fetchAll("SELECT id,name,start,end,active FROM events");
+        elseif ( $events=='current')
+            $events = db()->fetchSingle("SELECT id,name,start,end,active FROM events WHERE active ='Y' AND end > CURRENT_DATE() ORDER BY start LIMIT 1");
         else {
             $events = explode('|',$events);
 
