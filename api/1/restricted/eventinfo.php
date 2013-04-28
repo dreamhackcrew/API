@@ -19,6 +19,9 @@ class eventinfo extends service {
     }/*}}}*/
 
     function _checkin($event=null, $uid=null) {/*{{{*/
+        // Check that the user have access
+        $this->requireFlag('crewhantering');
+
         if ( $event == null || $event == "current" ) {
             $event = db()->fetchOne("SELECT id FROM events WHERE active ='Y' AND end > CURRENT_DATE() ORDER BY start LIMIT 1");
         } else {
@@ -38,6 +41,9 @@ class eventinfo extends service {
     }/*}}}*/
 
     function fetchEventinfo($event, $uid) {
+        // Check that the user have access
+        $this->requireFlag('crewhantering');
+
         $res = db()->fetchSingle('SELECT size, gsize, arrive, arrive_time, depart, depart_time, car, dinner, checkedin, checkedinby FROM user_eventinfo WHERE uid=%d and event in (%s)',$uid, $event);
 
         $eventinfo = array(
