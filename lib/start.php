@@ -16,9 +16,25 @@ function errorHandler($errno, $errstr, $errfile, $errline) {
 
     header('HTTP/1.0 500 Server error');
 
+    $trace = debug_backtrace(false);
+    unset($trace[0]);
+
+    foreach($trace as $key => $line)
+        $trace[$key] = array_intersect_key(
+            $line,
+            array(
+                'file'=>'',
+                'line'=>'',
+                'function'=>'',
+                'class'=>'',
+                'type'=>''
+            )
+        );
+
     response(array(
         'error'=>$errstr,
-        'no' => $errno
+        'no' => $errno,
+        'backtrace' => $trace
     ));
 }
 
