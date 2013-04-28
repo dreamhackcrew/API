@@ -67,10 +67,11 @@ class service {
         }
 
         // We dont have access, throw error message
-        response(array(
-            'error'=>'Access denied, insufficient permissions!',
-            'access_flags_needed' => $flagsMissing
-        ));
+        if ( $flagsMissing ) 
+            response(array(
+                'error'=>'Access denied, insufficient permissions!',
+                'access_flags_needed' => $flagsMissing
+            ));
     }/*}}}*/
 
     function makeAccessStr($uid) {/*{{{*/
