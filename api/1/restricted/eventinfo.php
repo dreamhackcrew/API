@@ -44,7 +44,10 @@ class eventinfo extends service {
         // Check that the user have access
         $this->requireFlag('crewhantering');
 
-        $res = db()->fetchSingle('SELECT size, gsize, arrive, arrive_time, depart, depart_time, car, dinner, checkedin, checkedinby FROM user_eventinfo WHERE uid=%d and event in (%s)',$uid, $event);
+        if ( !$res = db()->fetchSingle('SELECT size, gsize, arrive, arrive_time, depart, depart_time, car, dinner, checkedin, checkedinby FROM user_eventinfo WHERE uid=%d and event in (%s)',$uid, $event) )
+            return array(
+                'error' => 'The user have not completed the "Event information"-form'
+            );
 
         $eventinfo = array(
             'tshirt_size' => $res['size'],
