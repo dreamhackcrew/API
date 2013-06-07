@@ -26,7 +26,7 @@ class eventinfo extends service {
             $event = db()->fetchOne("SELECT id FROM events WHERE active ='Y' AND end > CURRENT_DATE() ORDER BY start LIMIT 1");
         } else {
             // Only allow numbers
-            $event = preg_grep('/^\d+$/',$event);
+            $event = intval($event);
         }
 
         if ( $uid == null ) {
