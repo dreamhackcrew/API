@@ -30,6 +30,11 @@ if ( isset($_SESSION['id']) ) {
         db()->query("DELETE FROM api_access_token WHERE customer='%s'",$customer_key);
     }
 
+    if ( isset($_GET['enable_https']) ) 
+        db()->query("UPDATE api_customers SET allow_https=1 WHERE customer_key='%s' AND owner=%d",$_GET['enable_https'],$_SESSION['id']); 
+    if ( isset($_GET['disable_https']) ) 
+        db()->query("UPDATE api_customers SET allow_https=0 WHERE customer_key='%s' AND owner=%d",$_GET['disable_https'],$_SESSION['id']); 
+
     if ( isset($_GET['enable']) ) 
         db()->query("UPDATE api_customers SET state='active' WHERE customer_key='%s' AND owner=%d",$_GET['enable'],$_SESSION['id']);
 
@@ -62,6 +67,7 @@ if ( isset($_SESSION['id']) ) {
     echo "<th>Customer key</th>";
     echo "<th>Customer secret</th>";
     echo "<th>Created</th>";
+    echo "<th>Allow https</th>";
     echo "<th>State</th>";
     echo '</tr>';
 
@@ -73,15 +79,21 @@ if ( isset($_SESSION['id']) ) {
         if ( $line['customer_key'] == $customer_key ) {
             echo '<td>'.$customer_secret.'<div class="alert alert-error"><strong>Warning!</strong> This key is only displayed once!</div></td>';
         } else {
-            echo "<td>hidden (only shown once) <input type=\"button\" class=\"btn btn-danger pull-right\" value=\"Reset key\" onclick=\"location.href='?reset={$line['customer_key']}';\"></td>";
+            echo "<td>hidden <input type=\"button\" class=\"btn btn-danger pull-right\" value=\"Reset key\" onclick=\"if (confirm('Are you shure?')) location.href='?reset={$line['customer_key']}';\"></td>";
         }
 
         echo "<td>{$line['created']}</td>";
 
+        if ( $line['allow_https'] ) {
+            echo "<td><input type=\"button\" class=\"btn btn-success pull-right\" value=\"Enabled\" onclick=\"location.href='?disable_https={$line['customer_key']}';\"></td>";
+        } else {
+            echo "<td><input type=\"button\" class=\"btn pull-right\" value=\"Disabled\" onclick=\"location.href='?enable_https={$line['customer_key']}';\"></td>";
+        }
+
         if ( $line['state'] == 'active' ) {
-            echo "<td><span class=\"label label-success\">Active</span> <input type=\"button\" class=\"btn btn-warning pull-right\" value=\"Disable\" onclick=\"location.href='?disable={$line['customer_key']}';\"></td>";
+            echo "<td><input type=\"button\" class=\"btn btn-success pull-right\" value=\"Active\" onclick=\"location.href='?disable={$line['customer_key']}';\"></td>";
         } elseif ( $line['state'] == 'disabled' ) {
-            echo "<td><span class=\"label label-warning\">Disabled</span> <input type=\"button\" class=\"btn pull-right\" value=\"Enable\" onclick=\"location.href='?enable={$line['customer_key']}';\"></td>";
+            echo "<td><input type=\"button\" class=\"btn btn-warning pull-right\" value=\"Disabled\" onclick=\"location.href='?enable={$line['customer_key']}';\"></td>";
         } else {
             echo "<td><span class=\"label\">{$line['state']}</span></td>";
         }

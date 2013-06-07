@@ -14,6 +14,12 @@ Most web browsers will display a login dialog when this response is received, al
 
 The Authorization specifies the authentication mechanism (in this case Basic) followed by the username and password. Although, the string dXNlcm5hbWU6cGFzc3dvcmQ= may look encrypted it is simply a base64 encoded version of <username>:<password>. In this example, the un-encoded string "username:password" was used and would be readily available to anyone who could intercept the HTTP request.
 
+## IMPORTANT
+
+The API do not allow your username and password to be used. Insted you create a API key and secret at http://api.crew.dreamhack.se and uses __customer key__ as __username__ and __customer secret__ as __password__. 
+
+The __customer key__ needs to have __allow https__ activated.;
+
 ## Using curl
 
-    curl --user name:password "https://api.crew.dreamhack.se/1/user/get/635?fields=uid,username"
+    curl --user customer_key:customer_secret "https://api.crew.dreamhack.se/1/user/get/635?fields=uid,username"

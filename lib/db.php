@@ -160,9 +160,18 @@ class db {
       $sql = str_replace('##',$this->getPrefix(),$sql);
 
       if( !$q = $this->_mysqli->query($sql) ) {
-        trigger_error('A database error have occurred, please contact your system administrator!');
+        db()->insert(array(
+            //'customer' => $this->request['oauth_consumer_key'],
+            'message' => 'SQL error: '.$this->_mysqli->error,
+            'data' => json_encode(array(
+                'query' => $orgsql,
+                'arguments' => $args,
+                'message' => $this->_mysqli->error,
+            )),
+        ),'api_messages');
+        trigger_error('A database error have occurred, please contact your system administrator! ');
         echo $sql;
-        echo $this->_mysqli->error;;
+        echo $this->_mysqli->error;
       }
 
       return $q;

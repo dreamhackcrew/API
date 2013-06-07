@@ -310,6 +310,20 @@ class oauth_provider {
 
         // Bin compare
         if ( rawurlencode($a) != rawurlencode($b) ) {
+            // Send a message to the developer about the problem
+            db()->insert(array(
+                'customer' => $this->request['oauth_consumer_key'],
+                'message' => 'signature_invalid',
+                'data' => json_encode(array(
+                    'request' => $this->request,
+                    'base_string' => $base_string,
+                    'consumer_secret' => $consumer_secret,
+                    'token_secret' => $token_secret,
+                    'provided_signature' => $b,
+                    'expected_signature' => $a,
+                )),
+            ),'api_messages');
+
             response(array('oauth_problem'=>'signature_invalid','base'=>$base_string,  ));
         }
 

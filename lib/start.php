@@ -31,11 +31,15 @@ function errorHandler($errno, $errstr, $errfile, $errline) {
             )
         );
 
-    response(array(
+    $data = array(
         'error'=>$errstr,
         'no' => $errno,
         'backtrace' => $trace
-    ));
+    );
+
+    file_put_contents('error_log', print_r(apache_request_headers(),true).print_r($_GET,true).print_r($_POST,true)."\n".(json_encode($data)).print_r(debug_backtrace(false),true)."\n-----------------------------------\n\n" ,FILE_APPEND);
+
+    response($data);
 }
 
 function response($data) {
