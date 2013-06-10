@@ -5,4 +5,4 @@ RewriteRule ^api  / [F,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{THE_REQUEST} !^[A-Z]+\ /layout
-RewriteRule ^([0-9A-Za-z_/\-\.\s\!\|]+)$   /index.php?command=$1 [L,QSA]
+RewriteRule ^([0-9A-Za-zåäöÅÄÖ_/+\-\.\s\!\|]+)$   /index.php?command=$1 [L,QSA]

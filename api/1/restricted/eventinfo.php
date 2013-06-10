@@ -72,6 +72,74 @@ class eventinfo extends service {
 
         return $eventinfo;
     }
+
+    function _search( $search ) {/*{{{*/
+
+        // Check that the user have access
+        $this->requireFlag('crewhantering');
+
+        if ( $events == null || $events == "current" ) {
+            $events = array(db()->fetchOne("SELECT id FROM events WHERE active ='Y' AND end > CURRENT_DATE() ORDER BY start LIMIT 1"));
+        } else {
+            $events = explode('|',$events);
+
+            // Only allow numbers
+            $events = preg_grep('/^\d+$/',$events);
+        }
+
+        $search = ltrim($search,'0');
+
+        // Do the search
+        if ( $u = db()->fetchAll("
+			SELECT users.uid,username,firstname,lastname,city,car,allowed_arrive FROM users 
+			LEFT JOIN user_profile 
+				USING(uid) 
+            JOIN user_eventinfo
+                ON user_eventinfo.uid=users.uid AND user_eventinfo.event IN (%s)  
+			WHERE 
+				( concat(firstname,' ',lastname) LIKE '%%%2\$s%%' 
+				OR username LIKE '%%%2\$s%%' 
+				OR city LIKE '%%%2\$s%%' 
+				OR birthdate = '%2\$s' 
+				OR primaryphone LIKE '%%%2\$s%%' 
+				OR secondaryphone LIKE '%%%2\$s%%' 
+				OR user_profile.email LIKE '%%%2\$s%%'
+				OR user_eventinfo.car LIKE '%%%2\$s%%'
+				) AND NOT level = 'disabled'
+            ORDER BY firstname, lastname DESC LIMIT 20
+			",implode($events,','),$search) ) {
+            foreach($u AS $key1=>$line1){
+
+                // Get profile pictures
+                if ( $pictures = db()->fetchAll("SELECT max(id) id,ident FROM images WHERE ident LIKE 'users.%%.%d' GROUP BY ident",$line1['uid']) )
+                foreach($pictures as $key => $line) {
+                    switch(substr($line['ident'],0,11) ) {
+                        case 'users.badge':
+                            if ( $hash = db()->fetchOne("SELECT file FROM images WHERE id=%d LIMIT 1",$line['id']) )
+                                $u[$key1]['badge_picture'] = "api.crew.dreamhack.se/1/image/".$hash;
+                            break;
+                        case 'users.press':
+                            if ( $hash = db()->fetchOne("SELECT file FROM images WHERE id=%d LIMIT 1",$line['id']) )
+                                $u[$key1]['profile_picture'] = "api.crew.dreamhack.se/1/image/".$hash;
+                            break;
+                    }
+                }
+
+
+                // Get team memberships
+                if ( $teams = db()->fetchAll("SELECT * FROM membership JOIN groups ON groups.gid=membership.gid AND groups.event IN (%s) WHERE uid=%d",implode($events,','),$line1['uid']) ) {
+                    foreach($teams as $key => $line) {
+                        $teams[$key] = db()->fetchAll("SELECT gid,name,is_team FROM groups WHERE lft <= %d AND rgt >= %d ORDER BY lft ASC",$line['lft'],$line['rgt']);
+                    }
+
+                    $u[$key1]['teams'] = $teams;
+                }
+            }
+        }
+
+
+        return $u;
+    }/*}}}*/
 }
 
 ?>
