@@ -16,7 +16,7 @@ The Authorization specifies the authentication mechanism (in this case Basic) fo
 
 ## IMPORTANT
 
-The API do not allow your username and password to be used. Insted you create a API key and secret at http://api.crew.dreamhack.se and uses __customer key__ as __username__ and __customer secret__ as __password__. 
+The API do allow your username and password to be used but it is NOT recomended! Insted you create a API key and secret at http://api.crew.dreamhack.se and uses __customer key__ as __username__ and __customer secret__ as __password__. This way you dont need to save your private password in clear text in scripts.
 
 The __customer key__ needs to have __allow https__ activated.;
 
