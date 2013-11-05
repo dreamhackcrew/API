@@ -7,8 +7,10 @@ require('lib/start.php');
 
 $request = $_GET['command'];
 
-if ($ext = pathinfo($request, PATHINFO_EXTENSION) )
-    $request = substr($request,0,-strlen($ext)-1);
+if ($ext = pathinfo($request, PATHINFO_EXTENSION) ) {
+    if ( in_array($ext,array('xml','url','json')) )
+        $request = substr($request,0,-strlen($ext)-1);
+}
 
 $request = explode('/',$request);
 

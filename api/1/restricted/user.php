@@ -23,19 +23,19 @@ class user extends service {
         else
             $u = db()->fetchSingle('SELECT '.implode($fields,',').' FROM users WHERE username LIKE "%s"',$uid);
 
-        $pictures = db()->fetchAll("SELECT max(id) id,ident FROM images WHERE ident LIKE 'users.%.".$u['uid']."' GROUP BY ident");
-        foreach($pictures as $key => $line) {
-            switch(substr($line['ident'],0,11) ) {
-                case 'users.badge':
-                    if ( $hash = db()->fetchOne("SELECT file FROM images WHERE id=%d LIMIT 1",$line['id']) )
-                        $u['badge_picture'] = "api.crew.dreamhack.se/1/image/".$hash;
-                    break;
-                case 'users.press':
-                    if ( $hash = db()->fetchOne("SELECT file FROM images WHERE id=%d LIMIT 1",$line['id']) )
-                        $u['profile_picture'] = "api.crew.dreamhack.se/1/image/".$hash;
-                    break;
+        if ( $pictures = db()->fetchAll("SELECT max(id) id,ident FROM images WHERE ident LIKE 'users.%.".$u['uid']."' GROUP BY ident") )
+            foreach($pictures as $key => $line) {
+                switch(substr($line['ident'],0,11) ) {
+                    case 'users.badge':
+                        if ( $hash = db()->fetchOne("SELECT file FROM images WHERE id=%d LIMIT 1",$line['id']) )
+                            $u['badge_picture'] = "api.crew.dreamhack.se/1/image/".$hash;
+                        break;
+                    case 'users.press':
+                        if ( $hash = db()->fetchOne("SELECT file FROM images WHERE id=%d LIMIT 1",$line['id']) )
+                            $u['profile_picture'] = "api.crew.dreamhack.se/1/image/".$hash;
+                        break;
+                }
             }
-        }
 
         if ( $u )
             return $u;
@@ -75,7 +75,7 @@ class user extends service {
         $u = db()->fetchAll('SELECT '.implode($fields,',').' FROM groups JOIN membership USING(gid) JOIN users USING(uid) WHERE event IN (%s)',implode(',',$events));
         return $u;
     }/*}}}*/
-    function _search( $search ) {/*{{{*/
+    function _search( $search='' ) {/*{{{*/
         $fields = array(
             'uid',
             'username',

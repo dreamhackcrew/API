@@ -20,6 +20,7 @@ class food extends service {
             foreach($data as $line){
                 $ret[$line['fid']]['datetime'] = $line['when'];
                 $ret[$line['fid']]['name'] = $line['name'];
+                $ret[$line['fid']]['fid'] = $line['fid'];
                 if($line['eaten'])
                     $ret[$line['fid']]['eaten'][] = (int) $line['uid'];
                 else
