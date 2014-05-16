@@ -23,7 +23,7 @@
           <a class="brand" href="/">Dreamhack Crew Corner API</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <?
+              <?php
                 function findDocs($path) {
                     $ret = scandir("api$path");
                     foreach($ret as $key => $line) {
