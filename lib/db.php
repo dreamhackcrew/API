@@ -42,8 +42,8 @@ class db {
         $this->_mysqli = mysqli_init();
 
 		if(!$this->_mysqli->real_connect($server, $user, $password,$database)){
-            $this->_mysqli = null;
-			return !trigger_error('Broken connection to database server: '.$server."<br/>\n".mysqli_connect_error(),E_USER_WARNING);
+			$this->_mysqli = null;
+			return !trigger_error('Broken connection to database server: '.$server."<br/>\n".mysqli_connect_error().' Code:'.mysqli_connect_errno(),E_USER_WARNING);
         }
 
         $this->scanTables();
@@ -100,7 +100,7 @@ class db {
    public function escapeStr($str)
    {
        if(!$this->_mysqli)
-           return false;
+           return !trigger_error('php-mysqli is not installed',E_USER_ERROR);
       $strip = get_magic_quotes_gpc();
 
       if(is_array($str)) {                // if array do loop
@@ -303,7 +303,7 @@ class db {
    public function fetchOne($sql = '')
    {
       if ( func_num_args() > 1 ) {
-          $args = array_slice(func_get_args(),1);
+		  $args = array_slice(func_get_args(),1);
           $args = $this->escapeStr($args);
           $sql = vsprintf($sql,$this->escapeStr($args));
       }

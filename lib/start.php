@@ -5,14 +5,19 @@ function __autoload($class){
         return require_once('lib/'.$class.'.php');
 }
 
+set_error_handler('errorHandler');
+
 // Connect to the database
 db::getInstance(true)->connect(config::dbServer, config::dbUser, config::dbPasswd,config::dbDatabase);
 new session();
 
-set_error_handler('errorHandler');
+
 function errorHandler($errno, $errstr, $errfile, $errline) {
     if ( !($errno & E_WARNING||$errno & E_ERROR || $errno & E_CORE_ERROR || $errno & E_COMPILE_ERROR || $errno & E_USER_ERROR || $errno & E_USER_WARNING || $errno & E_USER_NOTICE) )
         return true;
+
+	if ( preg_match('/Headers and client library minor version mismatch/',$errstr) )
+		return true;
 
     header('HTTP/1.0 500 Server error');
 
