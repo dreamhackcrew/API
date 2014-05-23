@@ -22,7 +22,7 @@ image::showThumb($image,$height,$width);
 
 class image {
 	static function storage() {
-		return '/var/www/public/crew.dreamhack.se/storage/images/';
+		return '/var/www/crew.dreamhack.se/storage/images/';
 	}
 
     static function getId( $id ) {
