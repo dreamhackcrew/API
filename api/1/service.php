@@ -10,6 +10,8 @@ function filter_methods($method) {
 
 class service {
     function __construct($request) {
+		if ( is_callable(array($this,'construct')) )
+			$this->construct();
 
         // Always add a _ to the requested method
         $command = '_'.$request[0];
