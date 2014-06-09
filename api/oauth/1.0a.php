@@ -289,7 +289,11 @@ class oauth_provider {
             $out .= '&'.$key.'='.urlencode($line);
         }
 
-        $base_string = $_SERVER['REQUEST_METHOD'].'&'.urlencode($_SERVER['SCRIPT_URI']).'&'.urlencode(ltrim($out,'&'));
+		# Fix for the webcluster where the SCRIPT_URI parameter is missing
+		$uri = explode('?',$_SERVER['REQUEST_URI'],2);
+		$uri = $_SERVER['HTTP_X_URL_SCHEME'].'://'.$_SERVER['SERVER_NAME'].$uri[0];
+
+		$base_string = $_SERVER['REQUEST_METHOD'].'&'.urlencode($uri).'&'.urlencode(ltrim($out,'&'));
 
         /*
         $parameters = array();
@@ -319,12 +323,12 @@ class oauth_provider {
                     'base_string' => $base_string,
                     'consumer_secret' => $consumer_secret,
                     'token_secret' => $token_secret,
-                    'provided_signature' => $b,
-                    'expected_signature' => $a,
+                    'provided_signature' => $this->request['oauth_signature'],
+                    'expected_signature' => urldecode($signature),
                 )),
             ),'api_messages');
 
-            response(array('oauth_problem'=>'signature_invalid','base'=>$base_string,  ));
+            response(array('oauth_problem'=>'signature_invalid','base'=>$base_string  ));
         }
 
         return true;
