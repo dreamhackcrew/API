@@ -9,7 +9,8 @@ set_error_handler('errorHandler');
 
 // Connect to the database
 db::getInstance(true)->connect(config::dbServer, config::dbUser, config::dbPasswd,config::dbDatabase);
-new session();
+session_start();
+//new session();
 
 
 function errorHandler($errno, $errstr, $errfile, $errline) {

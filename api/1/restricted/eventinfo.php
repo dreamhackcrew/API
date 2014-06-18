@@ -76,7 +76,7 @@ class eventinfo extends service {
     function _search( $search ) {/*{{{*/
 
         // Check that the user have access
-        $this->requireFlag('crewhantering');
+        //$this->requireFlag('crewhantering');
 
         if ( $events == null || $events == "current" ) {
             $events = array(db()->fetchOne("SELECT id FROM events WHERE active ='Y' AND end > CURRENT_DATE() ORDER BY start LIMIT 1"));
@@ -94,7 +94,7 @@ class eventinfo extends service {
 			SELECT users.uid,username,firstname,lastname,city,car,allowed_arrive FROM users 
 			LEFT JOIN user_profile 
 				USING(uid) 
-            JOIN user_eventinfo
+            LEFT JOIN user_eventinfo
                 ON user_eventinfo.uid=users.uid AND user_eventinfo.event IN (%s)  
 			WHERE 
 				( concat(firstname,' ',lastname) LIKE '%%%2\$s%%' 

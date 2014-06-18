@@ -62,11 +62,12 @@ class service {
         if ( !isset($_SESSION['access_flags']) )
             $_SESSION['access_flags'] = $this->getAccessFlags($_SESSION['access']);
 
-        $flagsMissing = array();
-        foreach($flags as $key => $line) {
-            if ( !in_array($line,$_SESSION['access_flags']) )
-                $flagsMissing[] = $line;
-        }
+		$flagsMissing = array();
+		if ( is_array($_SESSION['access_flags']) )
+			foreach($flags as $key => $line) {
+				if ( !in_array($line,$_SESSION['access_flags']) )
+					$flagsMissing[] = $line;
+			}
 
         // We dont have access, throw error message
         if ( $flagsMissing ) 
