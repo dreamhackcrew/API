@@ -87,7 +87,13 @@ class eventinfo extends service {
             $events = preg_grep('/^\d+$/',$events);
         }
 
-        $search = ltrim($search,'0');
+		if ( !$events || !reset($events) )
+			return !trigger_error('No event is active, please use ?event= to select event',E_USER_ERROR);
+
+		$search = ltrim($search,'0');
+
+		if ( !$search ) 
+			return !trigger_error('The search string is to short',E_USER_ERROR);
 
         // Do the search
         if ( $u = db()->fetchAll("
