@@ -73,7 +73,7 @@ class eventinfo extends service {
         return $eventinfo;
     }
 
-    function _search( $search ) {/*{{{*/
+    function _search( $events, $search ) {/*{{{*/
 
         // Check that the user have access
         //$this->requireFlag('crewhantering');
@@ -85,10 +85,10 @@ class eventinfo extends service {
 
             // Only allow numbers
             $events = preg_grep('/^\d+$/',$events);
-        }
+		}
 
 		if ( !$events || !reset($events) )
-			return !trigger_error('No event is active, please use ?event= to select event',E_USER_ERROR);
+			$events = array(0);
 
 		$search = ltrim($search,'0');
 
