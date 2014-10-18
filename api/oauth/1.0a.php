@@ -358,7 +358,7 @@ class oauth_provider {
                     );
             $signature = base64_encode($hmac);
         }
-        return urlencode($signature);
+        return $signature;
     }/*}}}*/
 }
 
