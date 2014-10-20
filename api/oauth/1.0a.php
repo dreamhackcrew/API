@@ -309,7 +309,7 @@ class oauth_provider {
 
         $signature = $this->sign( $base_string, $consumer_secret, $token_secret );
 
-        $a = base64_decode(urldecode($signature));
+        $a = base64_decode($signature);
         $b = base64_decode($this->request['oauth_signature']);
 
         // Bin compare
@@ -324,7 +324,7 @@ class oauth_provider {
                     'consumer_secret' => $consumer_secret,
                     'token_secret' => $token_secret,
                     'provided_signature' => $this->request['oauth_signature'],
-                    'expected_signature' => urldecode($signature),
+                    'expected_signature' => $signature,
                 )),
             ),'api_messages');
 
