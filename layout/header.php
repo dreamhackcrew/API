@@ -59,13 +59,18 @@
                 $tree=array(
                     '<i class="icon-home icon-white"></i> Home' => '/',
                     '<i class="icon-lock icon-white"></i> Authorize' => $auth,
-                    '<i class="icon-book icon-white"></i> Version 1' => array_merge(
+                    '<i class="icon-book icon-white"></i> v1 ' => array_merge(
                         $general,
                         array('label1'=>'Public'),
                         $public,
                         array('label2'=>'Restricted <span class="label label-important">Requires authentication</span>'),
                         $restricted
-                    )
+					),
+                    '<i class="icon-book icon-white"></i> v2 (dev)' => array_merge(
+						findDocs('/2/'),
+                        array('label1'=>'Available areas'),
+						findDocs('/2/modules/') 
+					)
                 );
 
                 printMenu($tree);

@@ -97,7 +97,7 @@ class eventinfo extends service {
 
         // Do the search
         if ( $u = db()->fetchAll("
-			SELECT users.uid,username,firstname,lastname,city,car,allowed_arrive FROM users 
+			SELECT users.uid,username,firstname,lastname,city,car,allowed_arrive,user_eventinfo.event event_id FROM users 
 			LEFT JOIN user_profile 
 				USING(uid) 
             LEFT JOIN user_eventinfo
@@ -135,7 +135,7 @@ class eventinfo extends service {
                 // Get team memberships
                 if ( $teams = db()->fetchAll("SELECT * FROM membership JOIN groups ON groups.gid=membership.gid AND groups.event IN (%s) WHERE uid=%d",implode($events,','),$line1['uid']) ) {
                     foreach($teams as $key => $line) {
-                        $teams[$key] = db()->fetchAll("SELECT gid,name,is_team FROM groups WHERE lft <= %d AND rgt >= %d ORDER BY lft ASC",$line['lft'],$line['rgt']);
+                        $teams[$key] = db()->fetchAll("SELECT gid,name,is_team,event event_id FROM groups WHERE lft <= %d AND rgt >= %d ORDER BY lft ASC",$line['lft'],$line['rgt']);
                     }
 
                     $u[$key1]['teams'] = $teams;

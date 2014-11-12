@@ -34,7 +34,9 @@ if ( isset($request[0]) && trim($request[0]) && $ext == 'md' ) {
     $_GET['file'] = $_GET['command'];
     include('pages/doc.php');
 } else {
-    include('pages/request.php');
+	include('pages/request.php');
+	include('pages/log.php');
+
 }
 include('layout/footer.php');
 
