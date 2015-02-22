@@ -20,4 +20,17 @@ class Events {
         $event = db()->fetchSingle("SELECT id,name,shortname,start,end,description,active,preparestart AS construction_start, prepareend AS construction_end FROM events WHERE shortname='%s'",$eventShort);
         return $event;
 	}
+
+	static function getng() {
+		if (isset($_GET['eventid'])) {
+        	$event = db()->fetchSingle("SELECT id,name,shortname,start,end,description,active,preparestart AS construction_start, prepareend AS construction_end FROM events WHERE id=%d",$_GET['eventid']);
+        	return $event;
+		}
+
+		if ($_GET['active'] == "true") {
+        	$events = db()->fetchAll("SELECT id,name,shortname,start,end,description,active,preparestart AS construction_start, prepareend AS construction_end FROM events WHERE active='Y'");
+			return $events;
+		}
+		
+	}
 }

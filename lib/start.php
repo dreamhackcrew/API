@@ -51,7 +51,7 @@ function errorHandler($errno, $errstr, $errfile, $errline) {
 function response($data) {
     global $ext;
 
- //   file_put_contents('log', print_r(apache_request_headers(),true).print_r($_GET,true).print_r($_POST,true)."\n".(json_encode($data))."\n-----------------------------------\n\n" ,FILE_APPEND);
+	//file_put_contents('log', print_r(apache_request_headers(),true).print_r($_GET,true).print_r($_POST,true)."\n".(json_encode($data))."\n-----------------------------------\n\n" ,FILE_APPEND);
 
     switch($ext) {
         case 'xml':

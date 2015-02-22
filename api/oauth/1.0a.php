@@ -282,30 +282,49 @@ class oauth_provider {
 
 // Help functions
     function verify($consumer_secret, $token_secret ) {/*{{{*/
-        $out = '';
-        $req = $this->request;
-        unset($req['oauth_signature']);
-        foreach($req as $key => $line) {
-            $out .= '&'.$key.'='.urlencode($line);
-        }
+		$out = '';
+		$req = $this->request;
+		unset($req['oauth_signature']);
+		ksort($req);
+		foreach($req as $key => $line) {
+			$out .= '&'.$key.'='.urlencode($line);
+		}
 
 		# Fix for the webcluster where the SCRIPT_URI parameter is missing
 		$uri = explode('?',$_SERVER['REQUEST_URI'],2);
-		$uri = $_SERVER['HTTP_X_URL_SCHEME'].'://'.$_SERVER['SERVER_NAME'].$uri[0];
+		if ( $_SERVER['HTTP_X_URL_SCHEME'] ) {
+			$uri = $_SERVER['HTTP_X_URL_SCHEME'].'://'.$_SERVER['SERVER_NAME'].$uri[0];
+		} elseif ( $_SERVER['HTTPS'] ) {
+			$uri = 'https://'.$_SERVER['SERVER_NAME'].$uri[0];
+		} else {
+			$uri = 'http://'.$_SERVER['SERVER_NAME'].$uri[0];
+		}
 
-		$base_string = $_SERVER['REQUEST_METHOD'].'&'.urlencode($uri).'&'.urlencode(ltrim($out,'&'));
+		//$base_string = $_SERVER['REQUEST_METHOD'].'&'.urlencode($uri).'&'.urlencode(ltrim($out,'&'));
 
-        /*
-        $parameters = array();
 
-        foreach($this->request as $key => $line) {
-            if ( $key != 'oauth_signature' )
-                $parameters[$key] = urlencode($line);
-        }
-        ksort($parameters);
 
-        $base_string = $_SERVER['REQUEST_METHOD'].'&'.urlencode($_SERVER['SCRIPT_URI']).'&'.urlencode(http_build_query($parameters));
-        */
+        //parse_str($_SERVER['QUERY_STRING'], $queryStringData);
+
+        //foreach (array_merge($queryStringData, $params) as $key => $value) {
+            //$signatureData[rawurlencode($key)] = rawurlencode($value);
+        //}
+
+        // determine base uri
+        //$baseUri = $uri->getScheme() . '://' . $uri->getRawAuthority();
+
+        //if ('/' === $uri->getPath()) {
+            //$baseUri .= $uri->hasExplicitTrailingHostSlash() ? '/' : '';
+        //} else {
+            //$baseUri .= $uri->getPath();
+        //}
+
+        $base_string = strtoupper($_SERVER['REQUEST_METHOD']) . '&';
+        $base_string .= rawurlencode($uri) . '&';
+        $base_string .= rawurlencode(ltrim($out,'&'));
+
+
+
 
         $signature = $this->sign( $base_string, $consumer_secret, $token_secret );
 
@@ -333,6 +352,21 @@ class oauth_provider {
 
         return true;
     }/*}}}*/
+
+    protected function buildSignatureDataString(array $signatureData)
+    {
+        $signatureString = '';
+        $delimiter = '';
+        foreach ($signatureData as $key => $value) {
+            $signatureString .= $delimiter . $key . '=' . $value;
+
+            $delimiter = '&';
+        }
+
+        return $signatureString;
+    }
+
+
     function sign ( $base_string, $consumer_secret, $token_secret )/*{{{*/
     {
         $key = urlencode($consumer_secret).'&'.urlencode($token_secret);

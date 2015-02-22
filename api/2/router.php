@@ -43,9 +43,9 @@ getApi()->get('/users/phone/(\w+)',		array('users','phonenumber'),		'secure', Ep
 //group
 
 //event
-getApi()->get('/events', 					array('events','getActive'),	'secure', EpiApi::external);
+getApi()->get('/events', 					array('events','getng'),	'secure', EpiApi::external);
 getApi()->get('/events/all', 				array('events','getAll'), 		'secure', EpiApi::external);
-getApi()->get('/events/(\d+)', 				array('events','get'), 			'secure', EpiApi::external);
+getApi()->get('/events/(\d+)', 				array('events','getng'), 			'secure', EpiApi::external);
 getApi()->get('/events/shortname/(\w+)', 	array('events','getShort'),		'secure', EpiApi::external);
 
 
